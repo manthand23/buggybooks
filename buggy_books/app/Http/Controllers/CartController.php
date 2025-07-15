@@ -25,7 +25,10 @@ class CartController extends Controller
             'author' => $request->author,
         ];
         Session::put('cart', $cart);
-        return redirect()->route('cart.index');
+        if ($request->expectsJson()) {
+            return response()->json(['status' => 'ok']);
+        }
+        return redirect()->back();
     }
 
     public function remove(Request $request, $id)
