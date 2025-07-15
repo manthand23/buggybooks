@@ -108,3 +108,35 @@
     @endif
 </div>
 @endsection 
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('form[action="{{ route('cart.add') }}"]').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(form);
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value,
+                    'Accept': 'application/json'
+                },
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Show a simple confirmation (customize as needed)
+                    let msg = document.createElement('span');
+                    msg.textContent = 'Book added to cart!';
+                    msg.style.color = 'green';
+                    msg.style.marginLeft = '10px';
+                    form.appendChild(msg);
+                    setTimeout(() => msg.remove(), 1500);
+                } else {
+                    alert('Failed to add book to cart.');
+                }
+            });
+        });
+    });
+});
+</script> 
